@@ -1,0 +1,3 @@
+import { requireAdmin } from "@/lib/services/admin-auth";
+import CourseManager from "./course-manager";
+export default async function AdminCourses() { const { supabase } = await requireAdmin(); const { data } = await supabase.from("courses").select("id,title,slug,description,instructor_name,instructor_bio,image_url,capacity,status,starts_at,ends_at,room").order("created_at", { ascending: false }); return <main><div><h1 className="text-3xl font-bold">Minicursos</h1><p className="mt-2 text-slate-600">Cadastre, publique e mantenha a programação atualizada.</p></div><CourseManager initial={data ?? []}/></main>; }

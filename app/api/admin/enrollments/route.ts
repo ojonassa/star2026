@@ -1,0 +1,5 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { requireAdmin } from "@/lib/services/admin-auth";
+const schema = z.object({ participant_id: z.string().uuid(), course_id: z.string().uuid() });
+export async function POST(request: Request) { const parsed = schema.safeParse(await request.json().catch(() => null)); if (!parsed.success) return NextResponse.json({ message: "Selecione participante e minicurso." }, { status: 400 }); try { const { supabase, admin } = await requireAdmin(); const { error } = await supabase.from("course_registrations").upsert({ participant_id: parsed.data.participant_id, course_id: parsed.data.course_id, status: "active", cancelled_at: null }, { onConflict: "course_id,participant_id" }); if (error) throw error; await supabase.from("audit_logs").insert({ admin_user_id: admin.user_id, action: "admin_enroll", entity_type: "course_registration", metadata: parsed.data }); return NextResponse.json({ message: "Matrícula registrada." }, { status: 201 }); } catch { return NextResponse.json({ message: "Não foi possível registrar a matrícula." }, { status: 403 }); } }

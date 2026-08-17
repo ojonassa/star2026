@@ -1,0 +1,3 @@
+import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/services/admin-auth";
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) { try { const { supabase, admin } = await requireAdmin(); const { id } = await params; const { error } = await supabase.from("course_registrations").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", id); if (error) throw error; await supabase.from("audit_logs").insert({ admin_user_id: admin.user_id, action: "cancel", entity_type: "course_registration", entity_id: id }); return NextResponse.json({ message: "Matrícula cancelada." }); } catch { return NextResponse.json({ message: "Não foi possível cancelar a matrícula." }, { status: 403 }); } }

@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-star-primary: var(--star-primary);
+  --color-star-secondary: var(--star-secondary);
+  --color-star-accent: var(--star-accent);
+}
+
+:root {
+  color-scheme: light;
+  --star-primary: #111827;
+  --star-secondary: #2563eb;
+  --star-accent: #22c55e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}

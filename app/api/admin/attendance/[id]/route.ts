@@ -1,0 +1,3 @@
+import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/services/admin-auth";
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) { try { const { supabase, admin } = await requireAdmin(); const { id } = await params; const { error } = await supabase.from("attendance").delete().eq("id", id); if (error) throw error; await supabase.from("audit_logs").insert({ admin_user_id: admin.user_id, action: "delete", entity_type: "attendance", entity_id: id, metadata: { reason: "administrative_correction" } }); return NextResponse.json({ message: "Presença removida." }); } catch { return NextResponse.json({ message: "Não foi possível corrigir a presença." }, { status: 403 }); } }

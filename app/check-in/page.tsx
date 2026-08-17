@@ -1,0 +1,5 @@
+"use client";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
+function CheckinForm(){const token=useSearchParams().get("token")??"";const[m,setM]=useState("");async function submit(f:FormData){const r=await fetch("/api/check-in",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,cpf:f.get("cpf"),birthDate:f.get("birthDate")})});setM((await r.json()).message)}return token?<form action={submit} className="mt-6 space-y-3"><label className="block">CPF<input required name="cpf" className="mt-1 block w-full border p-2"/></label><label className="block">Data de nascimento<input required type="date" name="birthDate" className="mt-1 block w-full border p-2"/></label>{m&&<p role="status">{m}</p>}<button className="rounded bg-blue-700 px-4 py-2 text-white">Confirmar presença</button></form>:<p className="mt-5 text-red-700">Link de check-in inválido.</p>}
+export default function Checkin(){return <main className="mx-auto max-w-md p-6"><h1 className="text-3xl font-bold">Check-in</h1><Suspense fallback={<p className="mt-5">Carregando check-in…</p>}><CheckinForm/></Suspense></main>}

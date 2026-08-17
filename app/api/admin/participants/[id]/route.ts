@@ -1,0 +1,6 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { requireAdmin } from "@/lib/services/admin-auth";
+import { isValidCpf, normalizeCpf } from "@/lib/validation/cpf";
+const schema = z.object({ full_name: z.string().trim().min(3).max(160), cpf: z.string().transform(normalizeCpf).refine(isValidCpf), birth_date: z.string().date(), email: z.string().email(), phone: z.string().max(40).nullable(), institution: z.string().max(200).nullable(), city: z.string().max(120).nullable() });
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) { const input = schema.safeParse(await request.json().catch(() => null)); if (!input.success) return NextResponse.json({ message: "Dados do participante inválidos." }, { status: 400 }); try { const { supabase, admin } = await requireAdmin(); const { id } = await params; const { error } = await supabase.from("participants").update(input.data).eq("id", id); if (error) throw error; await supabase.from("audit_logs").insert({ admin_user_id: admin.user_id, action: "update", entity_type: "participant", entity_id: id }); return NextResponse.json({ message: "Participante atualizado." }); } catch { return NextResponse.json({ message: "Não foi possível atualizar o participante." }, { status: 403 }); } }

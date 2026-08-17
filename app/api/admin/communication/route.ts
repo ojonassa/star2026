@@ -1,0 +1,6 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { requireAdmin } from "@/lib/services/admin-auth";
+import { sendEmail } from "@/lib/email";
+const schema = z.object({ recipients: z.array(z.string().email()).min(1).max(500), subject: z.string().trim().min(3).max(180), message: z.string().trim().min(3).max(10000) });
+export async function POST(request: Request) { const parsed = schema.safeParse(await request.json().catch(() => null)); if (!parsed.success) return NextResponse.json({ message: "Informe destinatários, assunto e mensagem válidos." }, { status: 400 }); try { const { admin, supabase } = await requireAdmin(); const results = await Promise.all(parsed.data.recipients.map(to => sendEmail({ to, subject: parsed.data.subject, text: parsed.data.message, templateType: "admin_communication", createdBy: admin.user_id }))); await supabase.from("audit_logs").insert({ admin_user_id: admin.user_id, action: "send_communication", entity_type: "email", metadata: { recipients: results.length, sent: results.filter(x => x.status === "sent").length } }); return NextResponse.json({ message: `${results.filter(x => x.status === "sent").length} e-mail(s) enviado(s).` }); } catch { return NextResponse.json({ message: "Não foi possível enviar a comunicação." }, { status: 403 }); } }
