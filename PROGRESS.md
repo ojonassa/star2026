@@ -92,6 +92,13 @@ Esta é a fonte de verdade. As seções posteriores são histórico e podem desc
 - Resultado no Supabase real: BLOQUEADO EXTERNAMENTE, sem URL/chaves do projeto para reproduzir os cenários A–D e o fluxo de senha.
 - Medição de build local: 63,4 s, incluindo compilação Turbopack de 41 s; não representa a latência de navegação após o servidor iniciado.
 
+## CORREÇÕES PÓS-TESTE MANUAL
+
+- Minicursos: o reset era causado pelo `action` do formulário com campos não controlados. O formulário agora usa estado controlado e `onSubmit`, preservando todos os valores textuais/datas/horários/status após falhas. VALIDADO LOCALMENTE.
+- Senha: após resposta bem-sucedida, a página chama `router.replace("/admin")` e `router.refresh()`. VALIDADO LOCALMENTE.
+- E-mail: inscrições e matrículas agora aguardam o adapter antes do término do handler, assegurando a tentativa de `email_logs`; o histórico exibe tipo, status e erro. BLOQUEADO EXTERNAMENTE: `RESEND_API_KEY`, `EMAIL_FROM` e `EMAIL_FROM_NAME` não estão configurados no `.env.local`, portanto não há teste real do Resend.
+- Exclusão de administradores: endpoint server-side exige equipe `development`, impede autoexclusão e protege o último administrador/desenvolvedor ativo. VALIDADO LOCALMENTE por tipagem/build; teste de Auth real depende do Supabase.
+
 ## RODADA DE REFINAMENTO INSTITUCIONAL
 
 - Em andamento: dashboard recebeu indicadores agregados e últimas inscrições; base de navegação administrativa criada para a futura reorganização em shell reutilizável.

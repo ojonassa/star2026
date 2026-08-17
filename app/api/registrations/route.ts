@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     if (!participant) throw new Error("PARTICIPANT_UNAVAILABLE");
     const { error: registrationError } = await supabase.from("event_registrations").upsert({ event_id: event.id, participant_id: participant.id, status: "active", cancelled_at: null }, { onConflict: "event_id,participant_id", ignoreDuplicates: true });
     if (registrationError) throw registrationError;
-    void sendRegistrationConfirmation({ to: participant.email, subject: "Inscri\u00e7\u00e3o confirmada", text: `Ol\u00e1, ${participant.full_name}. Sua inscri\u00e7\u00e3o no evento foi confirmada.` });
+    await sendRegistrationConfirmation({ to: participant.email, subject: "Inscri\u00e7\u00e3o confirmada", text: `Ol\u00e1, ${participant.full_name}. Sua inscri\u00e7\u00e3o no evento foi confirmada.` });
 
     return NextResponse.json({ message: "Inscrição confirmada com sucesso.", participantName: participant.full_name });
   } catch {
