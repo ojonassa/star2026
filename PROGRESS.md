@@ -99,6 +99,14 @@ Esta é a fonte de verdade. As seções posteriores são histórico e podem desc
 - E-mail: inscrições e matrículas agora aguardam o adapter antes do término do handler, assegurando a tentativa de `email_logs`; o histórico exibe tipo, status e erro. BLOQUEADO EXTERNAMENTE: `RESEND_API_KEY`, `EMAIL_FROM` e `EMAIL_FROM_NAME` não estão configurados no `.env.local`, portanto não há teste real do Resend.
 - Exclusão de administradores: endpoint server-side exige equipe `development`, impede autoexclusão e protege o último administrador/desenvolvedor ativo. VALIDADO LOCALMENTE por tipagem/build; teste de Auth real depende do Supabase.
 
+## SIMPLIFICAÇÃO DE ACESSO ADMINISTRATIVO
+
+- Migration `010_remove_forced_password_change.sql`: a coluna histórica `must_change_password` permanece apenas por compatibilidade, com padrão `false` e sem bloqueio de acesso.
+- Novos usuários entram diretamente com o e-mail e a senha definida pelo administrador.
+- A troca de senha é opcional, registrada em `audit_logs`, e pode ser feita pela própria conta na edição de usuários.
+- `proxy` e `requireAdmin` não redirecionam nem bloqueiam mais administradores por troca de senha pendente.
+- Validação local: lint, typecheck, testes e build passaram. Supabase real permanece pendente de configuração externa.
+
 ## RODADA DE REFINAMENTO INSTITUCIONAL
 
 - Em andamento: dashboard recebeu indicadores agregados e últimas inscrições; base de navegação administrativa criada para a futura reorganização em shell reutilizável.
