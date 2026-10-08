@@ -24,14 +24,14 @@ export default async function Home() {
     "--star-secondary": settings?.secondary_color ?? "#2563eb",
     "--star-accent": settings?.accent_color ?? "#22c55e",
   } as CSSProperties;
-  const logo = mediaUrl(settings?.logo_url);
+  const logo = mediaUrl(settings?.logo_url) ?? "/logo-star.png";
   const hero = mediaUrl(settings?.hero_image_url);
 
   return (
     <main style={theme} className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2 font-bold text-star-primary">{logo ? <Image src={logo} alt="Logo do evento" width={128} height={36} unoptimized className="h-9 max-w-32 object-contain"/> : "STAR"}</Link>
+          <Link href="/" className="flex items-center gap-2 font-bold text-star-primary">{logo ? <Image src={logo} alt="Logo do evento" width={200} height={60} unoptimized className="h-12 w-auto max-w-64 object-contain" /> : "STAR"}</Link>
           <nav aria-label="Navegação principal" className="flex items-center gap-4 text-sm">
             <a href="#minicursos" className="hidden sm:inline hover:underline">Minicursos</a>
             <Link href="/inscricao" className="rounded-md bg-star-secondary px-4 py-2 font-semibold text-white hover:opacity-90">Inscreva-se</Link>
