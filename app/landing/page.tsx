@@ -44,7 +44,7 @@ export default function LandingPage() {
             onClick={() => setShowModal(true)}
             className="rounded-lg bg-[#0088A9] hover:bg-[#007491] active:scale-95 transition-all px-6 py-2.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-md shadow-sky-900/10"
           >
-            INSCREVA-SE
+            INSCREVA-SE.
           </button>
         </div>
       </header>
